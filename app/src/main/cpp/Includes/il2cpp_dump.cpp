@@ -408,7 +408,7 @@ void il2cpp_dump(void *handle, char *outDir) {
     }
 #endif
     LOGI("write dump file");
-    auto outPath = std::string(outDir).append("/files/dump.cs");
+    auto outPath = std::string(outDir).append("/dump.cs");
     std::ofstream outStream(outPath);
     outStream << imageOutput.str();
     for (int i = 0; i < typeDefinitionsCount; ++i) {

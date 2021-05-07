@@ -2,8 +2,8 @@
 This is for helping you get dump.cs from Il2cpp game
 
 # Important
-this project is modifying version of [Riru-Il2cppDumper](https://github.com/Perfare/Riru-Il2CppDumper) <br />
-credit : [Perfare](https://github.com/Perfare)
+This project is modifying version of [Riru-Il2cppDumper](https://github.com/Perfare/Riru-Il2CppDumper) <br />
+Credit : [Perfare](https://github.com/Perfare)
 
 # Usage 
 - build with Android Studio

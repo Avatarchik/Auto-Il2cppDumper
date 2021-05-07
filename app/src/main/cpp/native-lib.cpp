@@ -2,10 +2,30 @@
 #include <string>
 #include <pthread.h>
 #include <dlfcn.h>
+#include <unistd.h>
 #include "Includes/il2cpp_dump.h"
 
-void *hack_thread(void*){
-    auto il2cpp_handle = dlopen("libil2cpp.so",4);
+bool isLibraryLoaded(const char *libraryName) {
+    char line[512] = {0};
+    FILE *fp = fopen("/proc/self/maps", "rt");
+    if (fp != nullptr) {
+        while (fgets(line, sizeof(line), fp)) {
+            if (strstr(line, libraryName)) {
+                return true;
+            }
+        }
+        fclose(fp);
+    }
+    return false;
+}
+#define libTarget "libil2cpp.so"
+
+void *hack_thread(void *) {
+    do {
+        sleep(1);
+    } while (!isLibraryLoaded(libTarget));
+    sleep(10); //waiting libil2cpp.so fully loaded
+    auto il2cpp_handle = dlopen(libTarget, 4);
     il2cpp_dump(il2cpp_handle, "/sdcard/Download");
     return nullptr;
 }

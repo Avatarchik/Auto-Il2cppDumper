@@ -16,4 +16,5 @@ Credit : [Perfare](https://github.com/Perfare)
 ```
 
 - compile and run it
+- wait 10-30 seconds 
 - once the dump complete it will auto generate dump.cs in /sdcard/Download

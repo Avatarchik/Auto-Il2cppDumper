@@ -20,11 +20,10 @@ bool isLibraryLoaded(const char *libraryName) {
 }
 #define libTarget "libil2cpp.so"
 
-void *hack_thread(void *) {
+void *dump_thread(void *) {
     do {
-        sleep(1);
+        sleep(10);
     } while (!isLibraryLoaded(libTarget));
-    sleep(10); //waiting libil2cpp.so fully loaded
     auto il2cpp_handle = dlopen(libTarget, 4);
     il2cpp_dump(il2cpp_handle, "/sdcard/Download");
     return nullptr;
@@ -34,5 +33,5 @@ __attribute__((constructor))
 void lib_main() {
     // Create a new thread so it does not block the main thread, means the game would not freeze
     pthread_t ptid;
-    pthread_create(&ptid, nullptr, hack_thread, nullptr);
+    pthread_create(&ptid, nullptr, dump_thread, nullptr);
 }

@@ -7,7 +7,7 @@ This project is modifying version of [Riru-Il2cppDumper](https://github.com/Perf
 Credit : [Perfare](https://github.com/Perfare)
 
 # Usage 
-- change unity version in Includes/Game.h
+- change unity version in Includes/il2cpp_dump.h
 - build with Android Studio
 - decompile the game 
 - copy result libnative.so into the decompiled folder apk

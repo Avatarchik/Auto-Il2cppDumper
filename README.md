@@ -10,7 +10,7 @@ Credit : [Perfare](https://github.com/Perfare)
 - change unity version in Includes/il2cpp_dump.h
 - build with Android Studio
 - decompile the game 
-- copy result libnative.so into the decompiled folder apk
+- copy result libnative-lib.so into the decompiled folder apk
 - search the main activity of the game
 - put this on onCreate function
 ```smali

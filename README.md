@@ -1,4 +1,6 @@
 # Auto-Il2cppDumper
+Note this is created by BrianGIG but he deleted his account sadly :(
+
 This is for helping you get dump.cs from Il2cpp game <br />
 hope this will help you >::<
 

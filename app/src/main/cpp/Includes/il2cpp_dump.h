@@ -5,11 +5,8 @@
 #ifndef RIRU_IL2CPPDUMPER_IL2CPP_H
 #define RIRU_IL2CPPDUMPER_IL2CPP_H
 
+#include "game.h"
 
-#define UnityVersion 2019.3.7f1
-
-// 2018.3.0f2(v24.1) and up enable it
-#define VersionAboveV24
 #define STR(x) #x
 #define STRINGIFY_MACRO(x) STR(x)
 #define EXPAND(x) x

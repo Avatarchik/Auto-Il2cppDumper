@@ -26,7 +26,10 @@ void *hack_thread(void *) {
     do {
         sleep(1);
     } while (!isLibraryLoaded(libTarget));
-    sleep(10); //waiting libil2cpp.so fully loaded
+
+    //Waiting libil2cpp.so fully loaded.
+    sleep(3);
+
     auto il2cpp_handle = dlopen(libTarget, 4);
     il2cpp_dump(il2cpp_handle, "/sdcard/Download");
     return nullptr;

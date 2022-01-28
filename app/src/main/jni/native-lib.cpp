@@ -31,7 +31,7 @@ void *hack_thread(void *) {
     sleep(3);
 
     auto il2cpp_handle = dlopen(libTarget, 4);
-    il2cpp_dump(il2cpp_handle, "/sdcard/Download");
+    il2cpp_dump(il2cpp_handle, "/storage/emulated/0/Download");
     return nullptr;
 }
 

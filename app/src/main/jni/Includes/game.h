@@ -11,9 +11,6 @@
 // Uncomment for 2018.3.0f2 and up
 #define VersionAbove2018dot3
 
-// Uncomment for 2020.2.0f1 and up
-//#define VersionAbove2020dot2
-
 // Uncomment for 2021.1.0f1 and up
 //#define VersionAbove2021dot1
 

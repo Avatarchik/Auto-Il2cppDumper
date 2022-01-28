@@ -6,7 +6,7 @@ hope this will help you >::<
 This project is modifying version of [Riru-Il2cppDumper](https://github.com/Perfare/Riru-Il2CppDumper) <br />
 Credit : [Perfare](https://github.com/Perfare)<br />
 
-This project was originally created by BrianGIG but he have deleted his account, so i will try to maintain this project when i can.
+And BrianGIG [Auto-Il2cppDumper](https://github.com/BryanGIG/Auto-Il2cppDumper)
 
 # Usage
 Get unity version by opening any asset file into Notepad++ and any text editor

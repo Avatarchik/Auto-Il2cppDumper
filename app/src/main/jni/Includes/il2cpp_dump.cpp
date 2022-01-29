@@ -25,6 +25,18 @@
 static void *il2cpp_handle = nullptr;
 static uint64_t il2cpp_base = 0;
 
+const char* GetPackageName()
+{
+    //https://stackoverflow.com/questions/42918762/how-to-get-app-package-name-or-applicationid-using-jni-android
+    char* application_id[64];
+    FILE* fp = fopen("proc/self/cmdline", "r");
+    if (fp) {
+        fread(application_id, sizeof(application_id), 1, fp);
+        fclose(fp);
+    }
+    return (const char*)application_id;
+}
+
 void init_il2cpp_api() {
 #define DO_API(r, n, p) n = (r (*) p)dlsym(il2cpp_handle, #n)
 
@@ -424,15 +436,10 @@ void il2cpp_dump(void *handle, char *outDir) {
         }
     }
 #endif
-    LOGI("Write dump file");
 
-    //https://stackoverflow.com/questions/42918762/how-to-get-app-package-name-or-applicationid-using-jni-android
-    FILE *cmdline = fopen("/proc/self/cmdline", "r");
-    char application_id[64] = { 0 };
-    fread(application_id, sizeof(application_id), 1, cmdline);
-    fclose(cmdline);
+    auto outPath = std::string(outDir).append("/").append(GetPackageName()).append("-dump.cs");
+    LOGI("Write dump file to %s", outPath.c_str());
 
-    auto outPath = std::string(outDir).append("/").append(application_id).append("-dump.cs");
     std::ofstream outStream(outPath);
     outStream << imageOutput.str();
     auto count = outPuts.size();

@@ -16,9 +16,11 @@
 
 // Uncomment for root mode
 // Root mode is to load our fake libunity.so and load game's real librealunity.so
-//#define RootMode
+// #define RootMode
 
-// Unity Version Compatible list
+// Unity Version Compatible list.
+// If the version is not listed, pick the closest
+// Example if game's version is 2019.4.31f1, use 2019.4.21f1
 // 5.3.0f4     | 5.3.0f4 - 5.3.1f1         | v16
 // 5.3.2f1     | 5.3.2f1                   | v19
 // 5.3.3f1     | 5.3.3f1 - 5.3.4f1         | v20

@@ -64,7 +64,7 @@ This method requires to modify game APK. You may need to bypass APK integrity an
 
 - Re-compile and run it
 - Wait 10-30 seconds 
-- Once the dump complete it will auto generate dump.cs in /sdcard/Download
+- Once the dump complete it will auto generate dump.cs in /storage/emulated/0/Android/data/(Package name)/ without storage permission
 
 # Root method
 This is useful to get around security. Does not need to modify game APK at all! This is a trick to load our fake libunity.so and load game's renamed lib librealunity.so
@@ -79,4 +79,4 @@ Note: Some games does not store the libs in /data/data, you would be unable to d
 - Put our lib file libunity.so
 - Run the game
 - Wait 10-30 seconds
-- Once the dump complete it will auto generate dump.cs in /sdcard/Download
+- Once the dump complete it will auto generate dump.cs in /storage/emulated/0/Android/data/(Package name)/ without storage permission

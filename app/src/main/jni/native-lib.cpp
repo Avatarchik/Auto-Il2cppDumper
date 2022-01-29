@@ -31,7 +31,9 @@ void *hack_thread(void *) {
     sleep(3);
 
     auto il2cpp_handle = dlopen(libTarget, 4);
-    il2cpp_dump(il2cpp_handle, "/storage/emulated/0/Download");
+    char buffer [64];
+    sprintf (buffer, "/storage/emulated/0/Android/data/%s/", GetPackageName());
+    il2cpp_dump(il2cpp_handle, buffer);
     return nullptr;
 }
 

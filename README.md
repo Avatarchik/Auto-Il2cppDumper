@@ -19,10 +19,8 @@ Uncomment `#define RootMode` to use it as root mode
 ### Non root method
 This method requires to modify APK. You may need to bypass APK integrity and signature check if you want to use this method
 
-- Build APK with Android Studio
-- Decompile app-debug.apk using apktool.jar, APK Tool GUI or any other tools of your choice
 - Decompile the game 
-- Copy result il2cppdumper.so into the decompiled folder apk. Make sure only copy same ABIs as the Target App, for example if Target App has only armeabi-v7a, then you should only copy armeabi-v7a
+- Copy result libil2cppdumper.so into the decompiled folder apk. Make sure only copy same ABIs as the Target App, for example if Target App has only armeabi-v7a, then you should only copy armeabi-v7a
 - Search the main activity in AndroidManifest.xml. Example: com.gameloft.android.XamarinMainActivity
 
 ```xml
@@ -64,9 +62,7 @@ This is useful to get around security. Does not need to modify game APK at all! 
 
 Note: Some games does not extract the libs in /data/data. In this case, try to use older Android version or modify APK file (See above).
 
-- Build APK with Android Studio
-- Extract libil2cppdumper.so from app-debug.apk. Make sure you know the architecture of the game and your device before proceed
-- Rename our lib to libunity.so
+- Rename libil2cppdumper.so lib to libunity.so
 - On rooted device/VM, use any file manager app that can access root. Go to /data/data/(package name)/lib
 - IMPORTANT! Rename game's libunity.so to librealunity.so
 - Put our lib file libunity.so

@@ -62,6 +62,7 @@ This is useful to get around security. Does not need to modify game APK at all! 
 
 Note: Some games does not extract the libs in /data/data. In this case, try to use older Android version or modify APK file (See above).
 
+- Make sure you know the architecture of the game and your device before proceed
 - Rename libil2cppdumper.so lib to libunity.so
 - On rooted device/VM, use any file manager app that can access root. Go to /data/data/(package name)/lib
 - IMPORTANT! Rename game's libunity.so to librealunity.so

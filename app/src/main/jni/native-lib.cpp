@@ -3,9 +3,16 @@
 #include <pthread.h>
 #include <dlfcn.h>
 #include <unistd.h>
-#include "Includes/il2cpp_dump.h"
-#include "Includes/game.h"
+#include <sys/system_properties.h>
+#include "Il2Cpp/il2cpp_dump.h"
+#include "Includes/config.h"
 #include "Includes/log.h"
+
+static int GetAndroidApiLevel() {
+    char prop_value[PROP_VALUE_MAX];
+    __system_property_get("ro.build.version.sdk", prop_value);
+    return atoi(prop_value);
+}
 
 bool isLibraryLoaded(const char *libraryName) {
     char line[512] = {0};
@@ -20,6 +27,7 @@ bool isLibraryLoaded(const char *libraryName) {
     }
     return false;
 }
+
 #define libTarget "libil2cpp.so"
 
 void *hack_thread(void *) {
@@ -28,11 +36,15 @@ void *hack_thread(void *) {
     } while (!isLibraryLoaded(libTarget));
 
     //Waiting libil2cpp.so fully loaded.
-    sleep(3);
+    sleep(Sleep);
 
     auto il2cpp_handle = dlopen(libTarget, 4);
-    char buffer [64];
-    sprintf (buffer, "/storage/emulated/0/Android/data/%s/", GetPackageName());
+    char buffer[64];
+    int sdk = GetAndroidApiLevel();
+    if (sdk >= 30) //Android 11 allows writing to Download folder without permission
+        sprintf(buffer, "/storage/emulated/0/Download/");
+    else
+        sprintf(buffer, "/storage/emulated/0/Android/data/%s", GetPackageName());
     il2cpp_dump(il2cpp_handle, buffer);
     return nullptr;
 }
@@ -40,22 +52,21 @@ void *hack_thread(void *) {
 //The idea from first Il2Cpp Dumper called PokemonGoDumper
 //https://github.com/Jumboperson/PokemonGoDumper/blob/master/main.c#L569
 
-int iBeenInjected = 0;
-void* pLibRealUnity = 0;
-typedef void (*UnitySendMessage_t)(const char* ob, const char* method, const char* msg);
-typedef jint(JNICALL* CallJNI_OnLoad_t)(JavaVM* vm, void* reserved);
-typedef void(JNICALL* CallJNI_OnUnload_t)(JavaVM* vm, void* reserved);
+void *pLibRealUnity = 0;
 
-UnitySendMessage_t RealUSM = 0;
+typedef jint(JNICALL *CallJNI_OnLoad_t)(JavaVM *vm, void *reserved);
+
+typedef void(JNICALL *CallJNI_OnUnload_t)(JavaVM *vm, void *reserved);
+
 CallJNI_OnLoad_t RealJNIOnLoad = 0;
 CallJNI_OnUnload_t RealJNIOnUnload = 0;
-void* libdlopen = 0;
 
 #ifdef RootMode
+
 JNIEXPORT jint JNICALL CallJNIOL(
-        JavaVM* vm, void* reserved)
-{
-    LOGI("Loading librealunity.so");
+        JavaVM *vm, void *reserved) {
+    LOGI("Exec librealunity.so");
+
     if (!pLibRealUnity)
         pLibRealUnity = dlopen("librealunity.so", RTLD_NOW);
     if (!RealJNIOnLoad)
@@ -64,35 +75,30 @@ JNIEXPORT jint JNICALL CallJNIOL(
 }
 
 JNIEXPORT void JNICALL CallJNIUL(
-        JavaVM* vm, void* reserved)
-{
+        JavaVM *vm, void *reserved) {
     if (!pLibRealUnity)
         pLibRealUnity = dlopen("librealunity.so", RTLD_NOW);
     if (!RealJNIOnUnload)
         RealJNIOnUnload = reinterpret_cast<CallJNI_OnUnload_t>(dlsym(pLibRealUnity,
-                                                                          "JNI_OnUnload"));
+                                                                     "JNI_OnUnload"));
     RealJNIOnUnload(vm, reserved);
 }
 
-JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved)
-{
-    if (!iBeenInjected)
-    {
-        LOGI("Loading dumper");
-        pthread_t ptid;
-        pthread_create(&ptid, nullptr, hack_thread, nullptr);
-    }
+JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved) {
+    LOGI("Initialize JNI");
+
+    pthread_t ptid;
+    pthread_create(&ptid, nullptr, hack_thread, nullptr);
+
     return CallJNIOL(vm, reserved);
 }
-JNIEXPORT void JNICALL JNI_OnUnload(JavaVM* vm, void* reserved)
-{
-    if (!iBeenInjected)
-    {
-        pthread_t ptid;
-        pthread_create(&ptid, nullptr, hack_thread, nullptr);
-    }
+
+JNIEXPORT void JNICALL JNI_OnUnload(JavaVM *vm, void *reserved) {
+    LOGI("Unload JNI");
+
     CallJNIUL(vm, reserved);
 }
+
 #else
 
 __attribute__((constructor))
@@ -101,5 +107,4 @@ void lib_main() {
     pthread_t ptid;
     pthread_create(&ptid, nullptr, hack_thread, nullptr);
 }
-
 #endif

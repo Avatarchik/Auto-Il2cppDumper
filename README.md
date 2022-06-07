@@ -1,82 +1,81 @@
 # Auto-Il2cppDumper
-This is for helping you get dump.cs from Il2cpp game <br />
-hope this will help you >::<
+Il2CppDumper without Magisk/Zygisk, dump il2cpp data at runtime, can bypass protection, encryption and obfuscation.
 
-# Important
-This project is modifying version of [Riru-Il2cppDumper](https://github.com/Perfare/Riru-Il2CppDumper) <br />
-Credit : [Perfare](https://github.com/Perfare)<br />
-
-And BrianGIG [Auto-Il2cppDumper](https://github.com/BryanGIG/Auto-Il2cppDumper)
+This project is based on BrianGIG [Auto-Il2cppDumper](https://github.com/BryanGIG/Auto-Il2cppDumper) which I continue to maintain it
 
 # Usage
-Get unity version by opening any asset file into Notepad++ and any text editor
+This is full auto, no need to put unity version anymore since it's based on Zygisk-Il2cppDumper.
 
-Edit unity version that match with UnityVersion Compatible list
+You can download pre-compiled libs [HERE](https://github.com/AndnixSH/Auto-Il2cppDumper/releases) and follow steps below
 
-```
-// UnityVersion Compatible list
-// 5.3.0f4     | 5.3.0f4 - 5.3.1f1         | v16
-// 5.3.2f1     | 5.3.2f1                   | v19
-// 5.3.3f1     | 5.3.3f1 - 5.3.4f1         | v20
-// 5.3.5f1     | 5.3.5f1                   | v21
-// 5.3.6f1     | 5.3.6f1                   | v21
-// 5.3.7f1     | 5.3.7f1 - 5.3.8f2         | v21
-// 5.4.0f3     | 5.4.0f3                   | v21
-// 5.4.1f1     | 5.4.1f1 - 5.4.3f1         | v21
-// 5.4.4f1     | 5.4.4f1 - 5.4.6f3         | v21
-// 5.5.0f3     | 5.5.0f3                   | v22
-// 5.5.1f1     | 5.5.1f1 - 5.5.6f1         | v22
-// 5.6.0f3     | 5.6.0f3 - 5.6.7f1         | v23
-// 2017.1.0f3  | 2017.1.0f3 - 2017.1.2f1   | v24
-// 2017.1.3f1  | 2017.1.3f1 - 2017.1.5f1   | v24
-// 2017.2.0f3  | 2017.2.0f3                | v24
-// 2017.2.1f1  | 2017.2.1f1 - 2017.4.40f1  | v24
-// 2018.1.0f2  | 2018.1.0f2 - 2018.1.9f2   | v24
-// 2018.2.0f2  | 2018.2.0f2 - 2018.2.21f1  | v24
-// 2018.3.0f2  | 2018.3.0f2 - 2018.3.7f1   | v24.1
-// 2018.3.8f1  | 2018.3.8f1 - 2018.4.36f1  | v24.1
-// 2019.1.0f2  | 2019.1.0f2 - 2019.2.21f1  | v24.2
-// 2019.3.0f6  | 2019.3.0f6 - 2019.3.6f1   | v24.2
-// 2019.3.7f1  | 2019.3.7f1 - 2019.4.14f1  | v24.3
-// 2019.4.15f1 | 2019.4.15f1 - 2019.4.20f1 | v24.4
-// 2019.4.21f1 | 2019.4.21f1 - 2019.4.29f1 | v24.5
-// 2020.1.0f1  | 2020.1.0f1 - 2020.1.10f1  | v24.3
-// 2020.1.11f1 | 2020.1.11f1 - 2020.1.17f1 | v24.4
-// 2020.2.0f1  | 2020.2.0f1 - 2020.2.3f1   | v27
-// 2020.2.4f1  | 2020.2.4f1 - 2020.3.15f2  | v27.1
-// 2021.1.0f1  | 2021.1.0f1 - 2021.1.16f1  | v27.2
-```
+###`jni/Includes/config.h`
 
-# Non root method
-This method requires to modify game APK. You may need to bypass APK integrity and sig check if you want to use this method
+Uncomment `#define RootMode` to use it as root mode
+
+`#define Sleep X`: Default is 2 seconds. Increase if getting issue with dumper, like if not fully dumped
+
+# How to use
+
+### Non root method
+This method requires to modify APK. You may need to bypass APK integrity and signature check if you want to use this method
 
 - Build APK with Android Studio
-- Decompile app-debug.apk
+- Decompile app-debug.apk using apktool.jar, APK Tool GUI or any other tools of your choice
 - Decompile the game 
-- Copy result libnative.so into the decompiled folder apk
-- Search the main activity of the game
-- Put this on onCreate function
+- Copy result il2cppdumper.so into the decompiled folder apk. Make sure only copy same ABIs as the Target App, for example if Target App has only armeabi-v7a, then you should only copy armeabi-v7a
+- Search the main activity in AndroidManifest.xml. Example: com.gameloft.android.XamarinMainActivity
+
+```xml
+<activity android:configChanges="density|fontScale|keyboard|keyboardHidden|layoutDirection|locale|mcc|mnc|navigation|orientation|screenLayout|screenSize|smallestScreenSize|touchscreen|uiMode" android:label="@string/icon_label" android:launchMode="singleTop" android:multiprocess="false" android:name="com.gameloft.android.XamarinMainActivity" android:resizeableActivity="false" android:screenOrientation="sensorLandscape" android:theme="@style/Theme.acp.notitlebar.fullscreen">
+    <intent-filter>
+        <action android:name="android.intent.action.MAIN"/>
+        <category android:name="android.intent.category.LAUNCHER"/>
+    </intent-filter>
+</activity>
+```
+
+- Locate the smali file of main activity
+- Copy and paste this smali code into onCreate function
+
 ```smali
- const-string v0, "native-lib"
+ const-string v0, "il2cppdumper"
  
  invoke-static {v0}, Ljava/lang/System;->loadLibrary(Ljava/lang/String;)V
 ```
 
-- Re-compile and run it
-- Wait 10-30 seconds 
-- Once the dump complete it will auto generate dump.cs in /storage/emulated/0/Android/data/(Package name)/ without storage permission
+Like
 
-# Root method
+```smali
+.method protected onCreate(Landroid/os/Bundle;)V
+    .locals 2
+
+    const-string v0, "il2cppdumper"
+ 
+    invoke-static {v0}, Ljava/lang/System;->loadLibrary(Ljava/lang/String;)V
+
+    whatever code below
+```
+
+- Re-compile, zipalign and sign the APK
+- Install APK
+
+### Root method
 This is useful to get around security. Does not need to modify game APK at all! This is a trick to load our fake libunity.so and load game's renamed lib librealunity.so
 
-Note: Some games does not store the libs in /data/data, you would be unable to do this trick!
+Note: Some games does not extract the libs in /data/data. In this case, try to use older Android version or modify APK file (See above).
 
 - Build APK with Android Studio
-- Extract libnative-lib.so from app-debug.apk. Make sure you know what architecture the game is using before proceed
+- Extract libil2cppdumper.so from app-debug.apk. Make sure you know the architecture of the game and your device before proceed
 - Rename our lib to libunity.so
 - On rooted device/VM, use any file manager app that can access root. Go to /data/data/(package name)/lib
 - IMPORTANT! Rename game's libunity.so to librealunity.so
 - Put our lib file libunity.so
+
+### Dumping
 - Run the game
-- Wait 10-30 seconds
-- Once the dump complete it will auto generate dump.cs in /storage/emulated/0/Android/data/(Package name)/ without storage permission
+- Wait a few seconds. Let the game load into main screen
+- Once the dump complete it will auto generate dump.cs in /storage/emulated/0/Android/data/(Package name)/ (Android 10 and below) or /storage/emulated/0/Download (Android 11 and above) without storage permission
+
+# Credits
+- Perfare [Zygisk-Il2CppDumper](https://github.com/Perfare/Zygisk-Il2CppDumper)
+- BrianGIG [Auto-Il2cppDumper](https://github.com/BryanGIG/Auto-Il2cppDumper)

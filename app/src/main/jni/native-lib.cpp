@@ -1,6 +1,6 @@
 #include <jni.h>
 #include <string>
-#include <pthread.h>
+#include <thread>
 #include <dlfcn.h>
 #include <unistd.h>
 #include <sys/system_properties.h>
@@ -30,7 +30,8 @@ bool isLibraryLoaded(const char *libraryName) {
 
 #define libTarget "libil2cpp.so"
 
-void *hack_thread(void *) {
+void dump_thread() {
+    LOGI("Start dumping");
     do {
         sleep(1);
     } while (!isLibraryLoaded(libTarget));
@@ -46,7 +47,6 @@ void *hack_thread(void *) {
     else
         sprintf(buffer, "/storage/emulated/0/Android/data/%s", GetPackageName());
     il2cpp_dump(il2cpp_handle, buffer);
-    return nullptr;
 }
 
 //The idea from first Il2Cpp Dumper called PokemonGoDumper
@@ -65,10 +65,12 @@ CallJNI_OnUnload_t RealJNIOnUnload = 0;
 
 JNIEXPORT jint JNICALL CallJNIOL(
         JavaVM *vm, void *reserved) {
-    LOGI("Exec librealunity.so");
+    LOGI("Exec %s", RealLibToLoad);
+
+    std::thread(dump_thread).detach();
 
     if (!pLibRealUnity)
-        pLibRealUnity = dlopen("librealunity.so", RTLD_NOW);
+        pLibRealUnity = dlopen(RealLibToLoad, RTLD_NOW);
     if (!RealJNIOnLoad)
         RealJNIOnLoad = reinterpret_cast<CallJNI_OnLoad_t>(dlsym(pLibRealUnity, "JNI_OnLoad"));
     return RealJNIOnLoad(vm, reserved);
@@ -77,7 +79,7 @@ JNIEXPORT jint JNICALL CallJNIOL(
 JNIEXPORT void JNICALL CallJNIUL(
         JavaVM *vm, void *reserved) {
     if (!pLibRealUnity)
-        pLibRealUnity = dlopen("librealunity.so", RTLD_NOW);
+        pLibRealUnity = dlopen(RealLibToLoad, RTLD_NOW);
     if (!RealJNIOnUnload)
         RealJNIOnUnload = reinterpret_cast<CallJNI_OnUnload_t>(dlsym(pLibRealUnity,
                                                                      "JNI_OnUnload"));
@@ -86,9 +88,6 @@ JNIEXPORT void JNICALL CallJNIUL(
 
 JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved) {
     LOGI("Initialize JNI");
-
-    pthread_t ptid;
-    pthread_create(&ptid, nullptr, hack_thread, nullptr);
 
     return CallJNIOL(vm, reserved);
 }
@@ -104,7 +103,6 @@ JNIEXPORT void JNICALL JNI_OnUnload(JavaVM *vm, void *reserved) {
 __attribute__((constructor))
 void lib_main() {
     // Create a new thread so it does not block the main thread, means the game would not freeze
-    pthread_t ptid;
-    pthread_create(&ptid, nullptr, hack_thread, nullptr);
+    std::thread(dump_thread).detach();
 }
 #endif

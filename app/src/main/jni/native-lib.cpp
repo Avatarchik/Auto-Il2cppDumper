@@ -41,11 +41,8 @@ void dump_thread() {
 
     auto il2cpp_handle = dlopen(libTarget, 4);
     char buffer[64];
-    int sdk = GetAndroidApiLevel();
-    if (sdk >= 30) //Android 11 allows writing to Download folder without permission
-        sprintf(buffer, "/storage/emulated/0/Download/");
-    else
-        sprintf(buffer, "/storage/emulated/0/Android/data/%s", GetPackageName());
+
+    sprintf(buffer, "/storage/emulated/0/Android/data/%s", GetPackageName());
     il2cpp_dump(il2cpp_handle, buffer);
 }
 

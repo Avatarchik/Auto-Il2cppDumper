@@ -10,7 +10,7 @@
 #define RootMode
 
 // Increase sleep in seconds if getting issue with dumper, like if not fully dumped or crashes
-#define Sleep 15
+#define Sleep 2
 
 // Target renamed lib
 #define RealLibToLoad "librealunity.so"

@@ -26,4 +26,5 @@ android {
             path "src/main/jni/Android.mk"
         }
     }
+    namespace 'com.il2cpp.dumper'
 }

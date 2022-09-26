@@ -10,14 +10,14 @@ You can download pre-compiled libs [HERE](https://github.com/AndnixSH/Auto-Il2cp
 
 ###`jni/Includes/config.h`
 
-Uncomment `#define RootMode` to use it as root mode
+Uncomment `#define UseFakeLib` to use it as root mode
 
 `#define Sleep X`: Default is 2 seconds. Increase if getting issue with dumper, like if not fully dumped
 
 # How to use
 
-### Non root method
-This method requires to modify APK. You may need to bypass APK integrity and signature check if you want to use this method
+### Adding Il2CppDumper to APK file
+Some games may have APK integrity and signature check. You may need to bypass it before adding Il2CppDumper
 
 - Decompile the game 
 - Copy result libil2cppdumper.so into the decompiled folder apk. Make sure only copy same ABIs as the Target App, for example if Target App has only armeabi-v7a, then you should only copy armeabi-v7a
@@ -57,16 +57,18 @@ Like
 - Re-compile, zipalign and sign the APK
 - Install APK
 
-### Root method
-This is useful to get around security. Does not need to modify game APK at all! This is a trick to load our fake libunity.so and load game's renamed lib librealunity.so
+### Fake libunity.so
+This is useful to get around security. Does not need to modify game APK at all but it needs ROOTED device! This is a trick to load our fake libunity.so and load game's renamed lib librealunity.so
 
 Note: Some games does not extract the libs in /data/data. In this case, try to use older Android version or modify APK file (See above).
 
 - Make sure you know the architecture of the game and your device before proceed
-- Rename libil2cppdumper.so lib to libunity.so
-- On rooted device/VM, use any file manager app that can access root. Go to /data/data/(package name)/lib
+- Make sure our lib is renamed to libunity.so
+- Use any file manager app that can access root. Go to /data/data/(package name)/lib
 - IMPORTANT! Rename game's libunity.so to librealunity.so
-- Put our lib file libunity.so
+- Put our lib file libunity.so to the lib folder
+
+This will work in APK too for non-rooted devices. You can just open APK as ZIP straight forward, rename libunity.so to librealunity.so, and add fake libunity.so. After that, zipalign and sign the APK. There is no need to re-compile APK at all
 
 ### Dumping
 - Run the game

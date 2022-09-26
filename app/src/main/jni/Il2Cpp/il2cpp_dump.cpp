@@ -375,17 +375,20 @@ void il2cpp_dump(void *handle, char *outDir) {
         LOGE("Failed to initialize il2cpp api.");
         return;
     }
+
     auto domain = il2cpp_domain_get();
+    LOGI("il2cpp_thread_attach");
     il2cpp_thread_attach(domain);
 
     //start dump
-    LOGI("dumping...");
+    LOGI("Get all assemblies");
     //size_t size;
     //auto assemblies = il2cpp_domain_get_assemblies(domain, &size);
     auto assemblies = Assembly$$GetAllAssemblies();
 
     std::stringstream imageOutput;
 
+    LOGI("Assemblies size %d", assemblies->size());
     for (int i = 0; i < assemblies->size(); ++i) {
         auto image = il2cpp_assembly_get_image((*assemblies)[i]);
         /*for (int i = 0; i < size; ++i) {

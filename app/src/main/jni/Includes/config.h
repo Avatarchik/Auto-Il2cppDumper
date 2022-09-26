@@ -5,14 +5,14 @@
 #ifndef RIRU_IL2CPPDUMPER_GAME_H
 #define RIRU_IL2CPPDUMPER_GAME_H
 
-// Uncomment for root mode
-// Root mode is to load our fake libunity.so and load game's real librealunity.so
-#define RootMode
+// Try increase sleep time if having issues with the game. Decrease sleep time if anti-cheat detection it earlier
+#define Sleep 3
 
-// Increase sleep in seconds if getting issue with dumper, like if not fully dumped or crashes
-#define Sleep 2
+// Uncomment for fake lib mode
+// It is to load our fake libunity.so and load game's real librealunity.so
+#define UseFakeLib
 
 // Target renamed lib
-#define RealLibToLoad "librealunity.so"
+#define RealLibToLoad "librealmain.so"
 
 #endif //RIRU_IL2CPPDUMPER_GAME_H

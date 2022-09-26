@@ -31,16 +31,18 @@ bool isLibraryLoaded(const char *libraryName) {
 #define libTarget "libil2cpp.so"
 
 void dump_thread() {
-    LOGI("Start dumping");
+    LOGI("Lib loaded");
     do {
         sleep(1);
     } while (!isLibraryLoaded(libTarget));
 
     //Waiting libil2cpp.so fully loaded.
+    LOGI("Waiting in %d...", Sleep);
     sleep(Sleep);
 
     auto il2cpp_handle = dlopen(libTarget, 4);
     char buffer[64];
+    LOGI("Start dumping");
 
     sprintf(buffer, "/storage/emulated/0/Android/data/%s", GetPackageName());
     il2cpp_dump(il2cpp_handle, buffer);
@@ -58,7 +60,7 @@ typedef void(JNICALL *CallJNI_OnUnload_t)(JavaVM *vm, void *reserved);
 CallJNI_OnLoad_t RealJNIOnLoad = 0;
 CallJNI_OnUnload_t RealJNIOnUnload = 0;
 
-#ifdef RootMode
+#ifdef UseFakeLib
 
 JNIEXPORT jint JNICALL CallJNIOL(
         JavaVM *vm, void *reserved) {

@@ -76,7 +76,7 @@ This will work in APK too for non-rooted devices. You can just open APK as ZIP s
 - Once the dump complete it will auto generate dump.cs in /storage/emulated/0/Android/data/(Package name)/ (Android 10 and below) or /storage/emulated/0/Download (Android 11 and above) without storage permission
 
 ### Obfuscated names
-Names can't be obfuscated. Once they are renamed, it can't be reverted back to original. Instead, try find older version without obfuscation, or debug the game using GG, frida, gdb, lldb or others. If you can't do any of these, maybe guess the functions and try one by one :P
+Names can't be deobfuscated. Once they are obfuscated/renamed, it can't be reverted back to original, the APK doesn't even have a brain to memorize all original names. Instead, try find older version without obfuscation, or debug the game using GG, frida, gdb, lldb or others. If you can't do any of these, maybe guess the functions and try one by one :P
 
 # Credits
 - Perfare [Zygisk-Il2CppDumper](https://github.com/Perfare/Zygisk-Il2CppDumper)

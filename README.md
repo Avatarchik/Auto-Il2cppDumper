@@ -8,7 +8,7 @@ This is full auto, no need to put unity version anymore since it's based on Zygi
 
 You can download pre-compiled libs [HERE](https://github.com/AndnixSH/Auto-Il2cppDumper/releases) and follow steps below
 
-###`jni/Includes/config.h`
+In config file `jni/Includes/config.h`:
 
 Uncomment `#define UseFakeLib` to use it as root mode
 
@@ -74,6 +74,9 @@ This will work in APK too for non-rooted devices. You can just open APK as ZIP s
 - Run the game
 - Wait a few seconds. Let the game load into main screen
 - Once the dump complete it will auto generate dump.cs in /storage/emulated/0/Android/data/(Package name)/ (Android 10 and below) or /storage/emulated/0/Download (Android 11 and above) without storage permission
+
+### Obfuscated names
+Names can't be obfuscated. Once they are renamed, it can't be reverted back to original. Instead, try find older version without obfuscation, or debug the game using GG, frida, gdb, lldb or others. If you can't do any of these, maybe guess the functions and try one by one :P
 
 # Credits
 - Perfare [Zygisk-Il2CppDumper](https://github.com/Perfare/Zygisk-Il2CppDumper)

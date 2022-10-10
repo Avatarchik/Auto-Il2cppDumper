@@ -16,7 +16,7 @@ Uncomment `#define UseFakeLib` to use it as root mode
 
 # How to use
 
-### Adding Il2CppDumper to APK file
+### Method 1: Adding Il2CppDumper to APK file
 Some games may have APK integrity and signature check. You may need to bypass it before adding Il2CppDumper
 
 - Decompile the game 
@@ -57,16 +57,15 @@ Like
 - Re-compile, zipalign and sign the APK
 - Install APK
 
-### Fake libunity.so
-This is useful to get around security. Does not need to modify game APK at all but it needs ROOTED device! This is a trick to load our fake libunity.so and load game's renamed lib librealunity.so
+### Method 2: Fake libs
+This is useful to get around security. Does not need to modify game APK at all but it needs ROOTED device! This is a trick to load our fake libunity.so or libmain.so and load game's renamed lib librealunity.so or librealmain.so. Can't decide which lib? Try libmain.so first as it sometimes work better than libunity.so
 
-Note: Some games does not extract the libs in /data/data. In this case, try to use older Android version or modify APK file (See above).
+Note: Some games does not extract the libs to /data/data. If this is the case, try to use older Android version (9 and below) or modify APK file (See above).
 
 - Make sure you know the architecture of the game and your device before proceed
-- Make sure our lib is renamed to libunity.so
 - Use any file manager app that can access root. Go to /data/data/(package name)/lib
-- IMPORTANT! Rename game's libunity.so to librealunity.so
-- Put our lib file libunity.so to the lib folder
+- Rename game's libunity.so to librealunity.so or libmain.so to librealmain.so 
+- Put our lib file libunity.so or libmain.so to the lib folder
 
 This will work in APK too for non-rooted devices. You can just open APK as ZIP straight forward, rename libunity.so to librealunity.so, and add fake libunity.so. After that, zipalign and sign the APK. There is no need to re-compile APK at all
 
@@ -77,6 +76,9 @@ This will work in APK too for non-rooted devices. You can just open APK as ZIP s
 
 ### Obfuscated names
 Names can't be deobfuscated. Once they are obfuscated/renamed, it can't be reverted back to original, the APK doesn't even have a brain to memorize all original names. Instead, try find older version without obfuscation, or debug the game using GG, frida, gdb, lldb or others. If you can't do any of these, maybe guess the functions and try one by one :P
+
+### Bypass more games?
+I'm too noob in Il2Cpp API related, so I can't improve it or bypassing security, and it is not really my thing to bypass. But if you know, feel free to pull request. Issues are still disabled since I forked the project.
 
 # Credits
 - Perfare [Zygisk-Il2CppDumper](https://github.com/Perfare/Zygisk-Il2CppDumper)

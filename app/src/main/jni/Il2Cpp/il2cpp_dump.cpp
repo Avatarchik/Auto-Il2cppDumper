@@ -29,7 +29,7 @@ static uint64_t il2cpp_base = 0;
 
 const char *GetPackageName() {
     //https://stackoverflow.com/questions/42918762/how-to-get-app-package-name-or-applicationid-using-jni-android
-    char *application_id[64];
+    char *application_id[256];
     FILE *fp = fopen("proc/self/cmdline", "r");
     if (fp) {
         fread(application_id, sizeof(application_id), 1, fp);
@@ -358,7 +358,7 @@ std::string dump_type(const Il2CppType *type) {
     return outPut.str();
 }
 
-void il2cpp_dump(void *handle, char *outDir) {
+void il2cpp_dump(void *handle) {
     LOGI("il2cpp_handle: %p", handle);
     il2cpp_handle = handle;
     init_il2cpp_api();
@@ -464,15 +464,18 @@ void il2cpp_dump(void *handle, char *outDir) {
             }
         }
     }
-    auto outPath = std::string(outDir).append("/").append(GetPackageName()).append("-dump.cs");
-    LOGI("Write dump file to %s", outPath.c_str());
 
-    std::ofstream outStream(outPath);
+    auto androidDataPath = std::string("/storage/emulated/0/Android/data/").append(GetPackageName()).append("/").append(GetPackageName()).append("-dump.cs");
+
+    LOGI("Save dump file to %s", androidDataPath.c_str());
+
+    std::ofstream outStream(androidDataPath);
     outStream << imageOutput.str();
     auto count = outPuts.size();
     for (int i = 0; i < count; ++i) {
         outStream << outPuts[i];
     }
     outStream.close();
+
     LOGI("dump done!");
 }

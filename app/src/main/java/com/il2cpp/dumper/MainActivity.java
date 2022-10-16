@@ -6,7 +6,7 @@ import android.os.Bundle;
 
 public class MainActivity extends Activity {
     static {
-        System.loadLibrary("native-lib");
+        System.loadLibrary("il2cppdumper");
     }
 
     @Override

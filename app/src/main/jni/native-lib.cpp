@@ -8,12 +8,6 @@
 #include "Includes/config.h"
 #include "Includes/log.h"
 
-static int GetAndroidApiLevel() {
-    char prop_value[PROP_VALUE_MAX];
-    __system_property_get("ro.build.version.sdk", prop_value);
-    return atoi(prop_value);
-}
-
 bool isLibraryLoaded(const char *libraryName) {
     char line[512] = {0};
     FILE *fp = fopen("/proc/self/maps", "rt");
@@ -41,11 +35,9 @@ void dump_thread() {
     sleep(Sleep);
 
     auto il2cpp_handle = dlopen(libTarget, 4);
-    char buffer[64];
     LOGI("Start dumping");
 
-    sprintf(buffer, "/storage/emulated/0/Android/data/%s", GetPackageName());
-    il2cpp_dump(il2cpp_handle, buffer);
+    il2cpp_dump(il2cpp_handle);
 }
 
 //The idea from first Il2Cpp Dumper called PokemonGoDumper

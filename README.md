@@ -25,7 +25,7 @@ This is a trick to load our own libunity.so or libmain.so and load game's rename
 - Rename original libunity.so to librealunity.so or original libmain.so to librealmain.so
 - Put our lib file libunity.so or libmain.so to the lib folder
   ![](Images/1.png)
-- 
+
 ### Non-root
 Some games may have APK integrity and signature check. You may need to bypass it before adding Il2CppDumper
 

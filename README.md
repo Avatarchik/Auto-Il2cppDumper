@@ -4,7 +4,7 @@ Il2CppDumper without Magisk/Zygisk, dump il2cpp data at runtime, can bypass prot
 This project is based on BrianGIG [Auto-Il2cppDumper](https://github.com/BryanGIG/Auto-Il2cppDumper) which I continue to maintain it
 
 # Usage
-This is full auto, no need to put unity version anymore since it's based on Zygisk-Il2cppDumper.
+This is full auto dumper, no need to put unity version anymore since it's based on Zygisk-Il2cppDumper.
 
 You can download pre-compiled libs [HERE](https://github.com/AndnixSH/Auto-Il2cppDumper/releases) and follow steps below
 
@@ -16,11 +16,31 @@ Uncomment `#define UseFakeLib` to use it as root mode
 
 # How to use
 
-### Method 1: Adding Il2CppDumper to APK file
+## Method 1: Fake lib
+This is a trick to load our own libunity.so or libmain.so and load game's renamed original lib librealunity.so or librealmain.so. Can't decide which lib? Try libmain.so first as it sometimes work better than libunity.so or vice versa
+
+### Root
+- Make sure you know the architecture of the game and your device before proceed
+- Use any file manager app that can access root. Go to /data/data/(package name)/lib or /data/app/(obfuscated name)/(package name-obfuscated name)/lib
+- Rename original libunity.so to librealunity.so or original libmain.so to librealmain.so
+- Put our lib file libunity.so or libmain.so to the lib folder
+  ![](Images/1.png)
+- 
+### Non-root
 Some games may have APK integrity and signature check. You may need to bypass it before adding Il2CppDumper
 
-- Decompile the game 
-- Copy result libil2cppdumper.so into the decompiled folder apk. Make sure only copy same ABIs as the Target App, for example if Target App has only armeabi-v7a, then you should only copy armeabi-v7a
+- Open APK file as ZIP using Winrar. 7zip or other zip utilities
+- Rename game's libunity.so to librealunity.so or libmain.so to librealmain.so
+- Put our fake lib file libunity.so or libmain.so to the lib folder
+  ![](Images/3.png)
+- Zipalign and sign the APK file
+- Install the APK
+
+### Method 2: Lib call
+If renaming lib doesn't work, try this method. Some games may have APK integrity and signature check. You may need to bypass it before adding Il2CppDumper
+
+- Decompile the game using Apktool
+- Copy libil2cppdumper.so into the lib folder. Make sure only copy same ABIs as the target app, for example if target app has only armeabi-v7a, then you should only copy armeabi-v7a
 - Search the main activity in AndroidManifest.xml. Example: com.gameloft.android.XamarinMainActivity
 
 ```xml
@@ -32,8 +52,9 @@ Some games may have APK integrity and signature check. You may need to bypass it
 </activity>
 ```
 
-- Locate the smali file of main activity
-- Copy and paste this smali code into onCreate function
+- Locate the said main activity in the smali folder, can be \smali_classes(number)\com\gameloft\android\XamarinMainActivity.smali if multidex). You must look through all smali classes until you found it
+
+- Insert this lib call into onCreate function below `.locals` XX
 
 ```smali
  const-string v0, "il2cppdumper"
@@ -54,25 +75,15 @@ Like
     whatever code below
 ```
 
-- Re-compile, zipalign and sign the APK
-- Install APK
-
-### Method 2: Fake libs
-This is useful to get around security. Does not need to modify game APK at all but it needs ROOTED device! This is a trick to load our fake libunity.so or libmain.so and load game's renamed lib librealunity.so or librealmain.so. Can't decide which lib? Try libmain.so first as it sometimes work better than libunity.so
-
-Note: Some games does not extract the libs to /data/data. If this is the case, try to use older Android version (9 and below) or modify APK file (See above).
-
-- Make sure you know the architecture of the game and your device before proceed
-- Use any file manager app that can access root. Go to /data/data/(package name)/lib
-- Rename game's libunity.so to librealunity.so or libmain.so to librealmain.so 
-- Put our lib file libunity.so or libmain.so to the lib folder
-
-This will work in APK too for non-rooted devices. You can just open APK as ZIP straight forward, rename libunity.so to librealunity.so, and add fake libunity.so. After that, zipalign and sign the APK. There is no need to re-compile APK at all
+- Re-compile, zipalign, sign the APK
+- Install the APK
 
 ### Dumping
 - Run the game
 - Wait a few seconds. Let the game load into main screen
-- Once the dump complete it will auto generate dump.cs in /storage/emulated/0/Android/data/(Package name)/ (Android 10 and below) or /storage/emulated/0/Download (Android 11 and above) without storage permission
+- Once the dump is complete, it will save the dump.cs in /storage/emulated/0/Android/data/(Package name)/
+  ![](Images/2.png)
+- If there is no dump.cs, check logcat using Matlog or Android Studio. Game should crash or freeze if dump fails
 
 ### Obfuscated names
 Names can't be deobfuscated. Once they are obfuscated/renamed, it can't be reverted back to original, the APK doesn't even have a brain to memorize all original names. Instead, try find older version without obfuscation, or debug the game using GG, frida, gdb, lldb or others. If you can't do any of these, maybe guess the functions and try one by one :P

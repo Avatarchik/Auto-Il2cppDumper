@@ -13,6 +13,6 @@
 #define UseFakeLib
 
 // Target renamed lib
-#define RealLibToLoad "librealunity.so"
+#define RealLibToLoad "librealmain.so"
 
 #endif //RIRU_IL2CPPDUMPER_GAME_H

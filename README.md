@@ -3,18 +3,10 @@ Il2CppDumper without Magisk/Zygisk, dump il2cpp data at runtime, can bypass prot
 
 This project is based on BrianGIG [Auto-Il2cppDumper](https://github.com/BryanGIG/Auto-Il2cppDumper) which I continue to maintain it
 
-# Usage
+# How to use
 This is full auto dumper, no need to put unity version anymore since it's based on Zygisk-Il2cppDumper.
 
-You can download pre-compiled libs [HERE](https://github.com/AndnixSH/Auto-Il2cppDumper/releases) and follow steps below
-
-In config file `jni/Includes/config.h`:
-
-Uncomment `#define UseFakeLib` to use it as root mode
-
-`#define Sleep X`: Default is 2 seconds. Increase if getting issue with dumper, like if not fully dumped
-
-# How to use
+Download pre-compiled libs [HERE](https://github.com/AndnixSH/Auto-Il2cppDumper/releases) and follow steps below
 
 ## Method 1: Fake lib
 This is a trick to load our own libunity.so or libmain.so and load game's renamed original lib librealunity.so or librealmain.so. Can't decide which lib? Try libmain.so first as it sometimes work better than libunity.so or vice versa
@@ -89,7 +81,17 @@ Like
 Names can't be deobfuscated. Once they are obfuscated/renamed, it can't be reverted back to original, the APK doesn't even have a brain to memorize all original names. Instead, try find older version without obfuscation, or debug the game using GG, frida, gdb, lldb or others. If you can't do any of these, maybe guess the functions and try one by one :P
 
 ### Bypass more games?
-I'm too noob in Il2Cpp API related, so I can't improve it or bypassing security, and it is not really my thing to bypass. But if you know, feel free to pull request. Issues are still disabled since I forked the project.
+No idea since bypassing is not my thing, but if you know, feel free to make a pull request. For now, Issues is closed
+
+# Usage (If you want to complie by yourself)
+
+In config header `jni/Includes/config.h`:
+
+`UseFakeLib` is to use it as root mode
+
+`RealLibToLoad` is the target lib to be faked
+
+`Sleep` is to delay dumping. Increase if getting issue with dumper, like if not fully dumped
 
 # Credits
 - Perfare [Zygisk-Il2CppDumper](https://github.com/Perfare/Zygisk-Il2CppDumper)

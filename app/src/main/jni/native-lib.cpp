@@ -37,7 +37,11 @@ void dump_thread() {
     auto il2cpp_handle = dlopen(libTarget, 4);
     LOGI("Start dumping");
 
-    il2cpp_dump(il2cpp_handle);
+    auto androidDataPath = std::string("/storage/emulated/0/Android/data/").append(
+            GetPackageName()).append("/").append(GetPackageName()).append("-dump.cs");
+
+    il2cpp_api_init(il2cpp_handle);
+    il2cpp_dump(androidDataPath.c_str());
 }
 
 //The idea from first Il2Cpp Dumper called PokemonGoDumper
@@ -54,23 +58,27 @@ CallJNI_OnUnload_t RealJNIOnUnload = 0;
 
 #ifdef UseFakeLib
 
-JNIEXPORT jint JNICALL CallJNIOL(
-        JavaVM *vm, void *reserved) {
-    LOGI("Exec %s", RealLibToLoad);
+JNIEXPORT jint JNICALL CallJNIOL(JavaVM *vm, void *reserved) {
+    LOGI("OnLoad called");
 
     std::thread(dump_thread).detach();
 
     if (!pLibRealUnity)
-        pLibRealUnity = dlopen(RealLibToLoad, RTLD_NOW);
+        pLibRealUnity = dlopen("librealmain.so", RTLD_NOW);
+    if (!pLibRealUnity)
+        pLibRealUnity = dlopen("librealunity.so", RTLD_NOW);
     if (!RealJNIOnLoad)
         RealJNIOnLoad = reinterpret_cast<CallJNI_OnLoad_t>(dlsym(pLibRealUnity, "JNI_OnLoad"));
     return RealJNIOnLoad(vm, reserved);
 }
 
-JNIEXPORT void JNICALL CallJNIUL(
-        JavaVM *vm, void *reserved) {
+JNIEXPORT void JNICALL CallJNIUL(JavaVM *vm, void *reserved) {
+    LOGI("OnUnload called");
+
     if (!pLibRealUnity)
-        pLibRealUnity = dlopen(RealLibToLoad, RTLD_NOW);
+        pLibRealUnity = dlopen("librealmain.so", RTLD_NOW);
+    if (!pLibRealUnity)
+        pLibRealUnity = dlopen("librealunity.so", RTLD_NOW);
     if (!RealJNIOnUnload)
         RealJNIOnUnload = reinterpret_cast<CallJNI_OnUnload_t>(dlsym(pLibRealUnity,
                                                                      "JNI_OnUnload"));

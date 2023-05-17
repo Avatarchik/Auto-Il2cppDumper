@@ -11,20 +11,20 @@
 #include <vector>
 #include <sstream>
 #include <fstream>
-#include <jni.h>
+#include <unistd.h>
+#include "xdl.h"
 #include "Includes/log.h"
 #include "il2cpp-tabledefs.h"
 #include "il2cpp-class.h"
+#include <jni.h>
 
 
 #define DO_API(r, n, p) r (*n) p
 
 #include "il2cpp-api-functions.h"
-#include <Includes/BNMUtils.h>
 
 #undef DO_API
 
-static void *il2cpp_handle = nullptr;
 static uint64_t il2cpp_base = 0;
 
 const char *GetPackageName() {
@@ -38,40 +38,21 @@ const char *GetPackageName() {
     return (const char *) application_id;
 }
 
-void init_il2cpp_api() {
-#define DO_API(r, n, p) n = (r (*) p)dlsym(il2cpp_handle, #n)
+void init_il2cpp_api(void *handle) {
+#define DO_API(r, n, p) n = (r (*) p)dlsym(handle, #n)
+
+// Do not use XDL yet because it doesn't support emulators
+
+/*#define DO_API(r, n, p) {                      \
+    n = (r (*) p)xdl_sym(handle, #n, nullptr); \
+    if(!n) {                                   \
+        LOGW("api not found %s", #n);          \
+    }                                          \
+}*/
 
 #include "il2cpp-api-functions.h"
 
 #undef DO_API
-}
-
-uint64_t get_module_base(const char *module_name) {
-    uint64_t addr = 0;
-    char line[1024];
-    uint64_t start = 0;
-    uint64_t end = 0;
-    char flags[5];
-    char path[PATH_MAX];
-
-    FILE *fp = fopen("/proc/self/maps", "r");
-    if (fp != nullptr) {
-        while (fgets(line, sizeof(line), fp)) {
-            strcpy(path, "");
-            sscanf(line, "%" PRIx64"-%" PRIx64" %s %*" PRIx64" %*x:%*x %*u %s\n", &start, &end,
-                   flags, path);
-#if defined(__aarch64__)
-            if (strstr(flags, "x") == 0) //TODO
-                continue;
-#endif
-            if (strstr(path, module_name)) {
-                addr = start;
-                break;
-            }
-        }
-        fclose(fp);
-    }
-    return addr;
 }
 
 std::string get_method_modifier(uint32_t flags) {
@@ -358,32 +339,31 @@ std::string dump_type(const Il2CppType *type) {
     return outPut.str();
 }
 
-void il2cpp_dump(void *handle) {
+void il2cpp_api_init(void *handle) {
     LOGI("il2cpp_handle: %p", handle);
-    il2cpp_handle = handle;
-    init_il2cpp_api();
+    init_il2cpp_api(handle);
     if (il2cpp_domain_get_assemblies) {
         Dl_info dlInfo;
         if (dladdr((void *) il2cpp_domain_get_assemblies, &dlInfo)) {
             il2cpp_base = reinterpret_cast<uint64_t>(dlInfo.dli_fbase);
-        } else {
-            LOGW("dladdr error, using get_module_base.");
-            il2cpp_base = get_module_base("libil2cpp.so");
         }
         LOGI("il2cpp_base: %" PRIx64"", il2cpp_base);
     } else {
         LOGE("Failed to initialize il2cpp api.");
         return;
     }
-
+    while (!il2cpp_is_vm_thread(nullptr)) {
+        LOGI("Waiting for il2cpp_init...");
+        sleep(1);
+    }
     auto domain = il2cpp_domain_get();
-    LOGI("il2cpp_thread_attach");
     il2cpp_thread_attach(domain);
+}
 
-    //start dump
-    LOGI("Get all assemblies");
-
+void il2cpp_dump(const char *outDir) {
+    LOGI("dumping...");
     size_t size;
+    auto domain = il2cpp_domain_get();
     auto assemblies = il2cpp_domain_get_assemblies(domain, &size);
     //geokar2006's bypass
     //auto assemblies = Assembly$$GetAllAssemblies();
@@ -448,7 +428,7 @@ void il2cpp_dump(void *handle) {
             auto imageName = std::string(image_name);
             auto pos = imageName.rfind('.');
             auto imageNameNoExt = imageName.substr(0, pos);
-            auto assemblyFileName = il2cpp_string_new(imageNameNoExt.c_str());
+            auto assemblyFileName = il2cpp_string_new(imageNameNoExt.data());
             auto reflectionAssembly = ((Assembly_Load_ftn) assemblyLoad->methodPointer)(nullptr,
                                                                                         assemblyFileName,
                                                                                         nullptr);
@@ -464,12 +444,12 @@ void il2cpp_dump(void *handle) {
             }
         }
     }
-
-    auto androidDataPath = std::string("/storage/emulated/0/Android/data/").append(GetPackageName()).append("/").append(GetPackageName()).append("-dump.cs");
-
-    LOGI("Save dump file to %s", androidDataPath.c_str());
-
-    std::ofstream outStream(androidDataPath);
+	
+    auto outPath = std::string(outDir);
+	
+	LOGI("Save dump file to %s", outPath.c_str());
+	
+    std::ofstream outStream(outPath);
     outStream << imageOutput.str();
     auto count = outPuts.size();
     for (int i = 0; i < count; ++i) {

@@ -4,9 +4,9 @@ Il2CppDumper without Magisk/Zygisk, dump il2cpp data at runtime, can bypass prot
 This project is based on BrianGIG [Auto-Il2cppDumper](https://github.com/BryanGIG/Auto-Il2cppDumper) which I continue to maintain it
 
 # How to use
-This is full auto dumper, no need to put unity version anymore since it's based on Zygisk-Il2cppDumper.
-
 Download pre-compiled libs [HERE](https://github.com/AndnixSH/Auto-Il2cppDumper/releases) and follow steps below
+
+Note: Non-root methods involves modifying APK file, you may need to bypass APK integrity or signature check if it's present. I won't get into the details of bypassing anything because it is simply out of the scope
 
 ## Method 1: Fake lib
 This is a trick to load our own libunity.so or libmain.so and load game's renamed original lib librealunity.so or librealmain.so. Can't decide which lib? Try libmain.so first as it sometimes work better than libunity.so or vice versa
@@ -29,7 +29,7 @@ Some games may have APK integrity and signature check. You may need to bypass it
 - Install the APK
 
 ### Method 2: Lib call
-If renaming lib doesn't work, try this method. Some games may have APK integrity and signature check. You may need to bypass it before adding Il2CppDumper
+If renaming lib doesn't work, try this method.
 
 - Decompile the game using Apktool
 - Copy libil2cppdumper.so into the lib folder. Make sure only copy same ABIs as the target app, for example if target app has only armeabi-v7a, then you should only copy armeabi-v7a
@@ -75,7 +75,7 @@ Like
 - Wait a few seconds. Let the game load into main screen
 - Once the dump is complete, it will save the dump.cs in /storage/emulated/0/Android/data/(Package name)/
   ![](Images/2.png)
-- If there is no dump.cs, check logcat using Matlog or Android Studio. Game should crash or freeze if dump fails
+- If there is no dump.cs, check logcat using Matlog or Android Studio. Game usually crash or freeze if dump fails
 
 ### Obfuscated names
 Names can't be deobfuscated. Once they are obfuscated/renamed, it can't be reverted back to original, the APK doesn't even have a brain to memorize all original names. Instead, try find older version without obfuscation, or debug the game using GG, frida, gdb, lldb or others. If you can't do any of these, maybe guess the functions and try one by one :P
@@ -88,8 +88,6 @@ No idea since bypassing is not my thing, but if you know, feel free to make a pu
 In config header `jni/Includes/config.h`:
 
 `UseFakeLib` is to use it as root mode
-
-`RealLibToLoad` is the target lib to be faked
 
 `Sleep` is to delay dumping. Increase if getting issue with dumper, like if not fully dumped
 

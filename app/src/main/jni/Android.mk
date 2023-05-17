@@ -12,9 +12,14 @@ LOCAL_LDFLAGS += -Wl,--gc-sections,--strip-all, -llog
 LOCAL_ARM_MODE := arm
 
 LOCAL_C_INCLUDES += $(MAIN_LOCAL_PATH)
+LOCAL_C_INCLUDES += $(LOCAL_PATH)
+LOCAL_C_INCLUDES += $(LOCAL_PATH)/Il2Cpp/xdl/include
 
-LOCAL_SRC_FILES := native-lib.cpp \
+FILE_LIST := $(wildcard $(LOCAL_PATH)/Il2Cpp/xdl/*.c)
+
+LOCAL_SRC_FILES := $(FILE_LIST:$(LOCAL_PATH)/%=%)
+LOCAL_SRC_FILES += native-lib.cpp \
                    Il2Cpp/il2cpp_dump.cpp
 
-LOCAL_LDLIBS := -llog -landroid -lGLESv2
+LOCAL_LDLIBS := -llog -landroid -lGLESv2 -ldl
 include $(BUILD_SHARED_LIBRARY)

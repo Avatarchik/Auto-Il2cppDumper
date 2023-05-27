@@ -78,10 +78,10 @@ Like
 - If there is no dump.cs, check logcat using Matlog or Android Studio. Game usually crash or freeze if dump fails
 
 ### Obfuscated names
-Names can't be deobfuscated. Once they are obfuscated/renamed, it can't be reverted back to original, the APK doesn't even have a brain to memorize all original names. Instead, try find older version without obfuscation, or debug the game using GG, frida, gdb, lldb or others. If you can't do any of these, maybe guess the functions and try one by one :P
+Names can't be deobfuscated. Once they are obfuscated/renamed, it can't be reverted back to original, the game doesn't even kept any original names which makes obfuscation very useful. Instead, try to find older version without obfuscation, or debug the game using GG, frida, gdb, lldb or others. If you can't do any of these, maybe guess the functions and try one by one? :P
 
-### Bypass more games?
-No idea since bypassing is not my thing, but if you know, feel free to make a pull request. For now, Issues is closed
+### Bypassing protection?
+Bypassing is not my thing, but if you know, feel free to make a pull request.
 
 # Usage (If you want to complie by yourself)
 
